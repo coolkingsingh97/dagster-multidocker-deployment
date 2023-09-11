@@ -1,0 +1,62 @@
+version: '3.7'
+services:
+  dagster:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      - DAGSTER_PG_USERNAME=
+      - DAGSTER_PG_PASSWORD=
+      - DAGSTER_PG_HOST=
+      - DAGSTER_PG_DB=
+      - GOOGLE_APPLICATION_CREDENTIALS=
+    container_name: dagster
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/io_manager_storage:/tmp/io_manager_storage
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+
+  projectpoc1:
+    build:
+      context: .
+      dockerfile: ./projectpoc1/Dockerfile_projectpoc1
+    container_name: projectpoc1
+    image: projectpoc1_image
+    restart: always
+    environment:
+      - DAGSTER_PG_USERNAME=postgres
+      - DAGSTER_PG_PASSWORD=password
+      - DAGSTER_PG_HOST=34.125.111.231
+      - DAGSTER_PG_DB=postgres
+      - DAGSTER_CURRENT_IMAGE=projectpoc1_image
+    
+  dagster-daemon:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    entrypoint:
+      - dagster-daemon
+      - run
+    container_name: docker_daemon
+    restart: on-failure
+    environment:
+      - DAGSTER_PG_USERNAME=postgres
+      - DAGSTER_PG_PASSWORD=password
+      - DAGSTER_PG_HOST=34.125.111.231
+      - DAGSTER_PG_DB=postgres
+      - GOOGLE_APPLICATION_CREDENTIALS=dagster-poc-1-5b5ff1cf78d7.json
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/io_manager_storage:/tmp/io_manager_storage 
+
+  meltano:
+    build:
+      context: .
+      dockerfile: ./meltano-dagster-poc1/Dockerfile_meltanodagsterpoc1
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=

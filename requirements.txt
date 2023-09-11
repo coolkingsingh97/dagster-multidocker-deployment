@@ -1,0 +1,8 @@
+dagster-webserver==1.4.0
+dagster-gcp==0.20.0
+dagster-postgres==0.20.0
+dagster-docker==0.20.0
+dagster-graphql==1.4.0
+dagster==1.4.0
+sqlalchemy<2.0.0
+pydantic<=1.10.4

@@ -1,0 +1,6 @@
+load_from:
+  # References file copied into dockerfile
+  - grpc_server: 
+      host: projectpoc1
+      port: 4000
+      location_name: "projectpoc1"
